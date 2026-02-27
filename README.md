@@ -1,20 +1,11 @@
-<!--
-Get your module up and running quickly.
-
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: @adamkasper/nuxt-unleash
-- Description: My new Nuxt module
--->
-
-# My Module
+# @adamkasper/nuxt-unleash
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-My new Nuxt module for doing amazing things.
+Nuxt module for [Unleash](https://docs.getunleash.io/).
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)
 <!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/@adamkasper/nuxt-unleash?file=playground%2Fapp.vue) -->
@@ -35,7 +26,7 @@ Install the module to your Nuxt application with one command:
 npx nuxt module add @adamkasper/nuxt-unleash
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+That's it! You can now use `@adamkasper/nuxt-unleash` in your Nuxt app ✨
 
 
 ## Contribution
