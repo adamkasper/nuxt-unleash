@@ -1,10 +1,10 @@
 {
   "name": "@adamkasper/nuxt-unleash",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Nuxt module for Unleash",
   "license": "MIT",
-  "repository": "@adamkasper/nuxt-unleash",
+  "repository": "github:adamkasper/nuxt-unleash",
   "exports": {
     ".": {
       "types": "./dist/types.d.mts",
@@ -27,7 +27,8 @@
     "dev": "npm run dev:prepare && nuxt dev playground",
     "dev:build": "nuxt build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
-    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "release": "bumpp",
+    "changelog": "changelogen --release",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
@@ -46,6 +47,7 @@
     "@nuxt/schema": "catalog:",
     "@nuxt/test-utils": "catalog:",
     "@types/node": "catalog:",
+    "bumpp": "catalog:",
     "changelogen": "catalog:",
     "eslint": "catalog:",
     "nuxt": "catalog:",
