@@ -35,7 +35,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/kit": "catalog:"
+    "@nuxt/kit": "catalog:",
+    "unleash-client": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
@@ -51,9 +52,5 @@
     "typescript": "catalog:",
     "vitest": "catalog:",
     "vue-tsc": "catalog:"
-  },
-  "resolutions": {
-    "chokidar": "^5.0.0",
-    "semver": "^7.7.4"
   }
 }
