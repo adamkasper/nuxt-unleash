@@ -1,7 +1,7 @@
 {
   "name": "@adamkasper/nuxt-unleash",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2-beta.1",
   "description": "Nuxt module for Unleash",
   "license": "MIT",
   "repository": "github:adamkasper/nuxt-unleash",
