@@ -5,61 +5,170 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-Nuxt module for [Unleash](https://docs.getunleash.io/).
-
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
-<!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/@adamkasper/nuxt-unleash?file=playground%2Fapp.vue) -->
-<!-- - [📖 &nbsp;Documentation](https://example.com) -->
+[Unleash](https://docs.getunleash.io/) feature flags for Nuxt with full SSR support. Flags are evaluated server-side during rendering — no flicker, no client-side SDK, one API token.
 
 ## Features
 
-<!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+- **SSR-first** — flags evaluated during server rendering, hydrated to client
+- **Zero flicker** — no `undefined` state, no layout shift on hydration
+- **Single token** — server-side API token only, never exposed to the client
+- **Auto-refresh** — client polls for flag updates, pauses when tab is hidden
+- **Reactive composables** — `useFlag`, `useVariant`, `useFlagsStatus`, `useUnleashContext`
+- **Context-aware** — update user context on the fly (login, A/B segments)
 
-## Quick Setup
-
-Install the module to your Nuxt application with one command:
+## Setup
 
 ```bash
 npx nuxt module add @adamkasper/nuxt-unleash
 ```
 
-That's it! You can now use `@adamkasper/nuxt-unleash` in your Nuxt app ✨
+Configure in `nuxt.config.ts`:
 
+```ts
+export default defineNuxtConfig({
+  modules: ['@adamkasper/nuxt-unleash'],
+  unleash: {
+    url: 'https://unleash.example.com/api',
+    token: 'default:development.your-token-here',
+    appName: 'my-app',
+  },
+})
+```
 
-## Contribution
+That's it. All composables are auto-imported.
 
-<details>
-  <summary>Local development</summary>
+## Usage
 
-  ```bash
-  # Install dependencies
-  npm install
+### Check if a flag is enabled
 
-  # Generate type stubs
-  npm run dev:prepare
+```vue
+<script setup>
+const showBanner = useFlag('new-banner')
+</script>
 
-  # Develop with the playground
-  npm run dev
+<template>
+  <div v-if="showBanner">
+    Welcome to the new experience!
+  </div>
+</template>
+```
 
-  # Build the playground
-  npm run dev:build
+### Get a variant (A/B testing)
 
-  # Run ESLint
-  npm run lint
+```vue
+<script setup>
+const variant = useVariant('checkout-experiment')
+// variant.value.name    → 'control' | 'treatment-a' | 'treatment-b'
+// variant.value.enabled → boolean
+// variant.value.payload → { type: string, value: string } | undefined
+</script>
 
-  # Run Vitest
-  npm run test
-  npm run test:watch
+<template>
+  <CheckoutA v-if="variant.name === 'treatment-a'" />
+  <CheckoutB v-else-if="variant.name === 'treatment-b'" />
+  <CheckoutDefault v-else />
+</template>
+```
 
-  # Release new version
-  npm run release
-  ```
+### Update context (after login, etc.)
 
-</details>
+```vue
+<script setup>
+const { updateContext } = useUnleashContext()
 
+async function onLogin(user) {
+  await updateContext({
+    userId: user.id,
+    properties: { plan: user.plan },
+  })
+  // All flags are now re-evaluated with the new context
+}
+</script>
+```
+
+### Check loading status
+
+```vue
+<script setup>
+const { ready, flagCount } = useFlagsStatus()
+</script>
+
+<template>
+  <div v-if="!ready">
+    Loading flags...
+  </div>
+  <div v-else>
+    {{ flagCount }} flags loaded
+  </div>
+</template>
+```
+
+### Debug all flags
+
+```ts
+const allFlags = useAllFlags()
+console.log(allFlags.value)
+// { 'my-flag': { name, enabled, variant }, ... }
+```
+
+## Configuration
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `url` | `string` | **required** | Unleash API URL |
+| `token` | `string` | **required** | Server-side API token |
+| `appName` | `string` | **required** | Application name |
+| `environment` | `string` | `'default'` | Environment name |
+| `refreshInterval` | `number` | `15000` | Server SDK polling interval (ms) |
+| `clientRefreshInterval` | `number` | `30000` | Client polling interval (ms), `0` to disable |
+| `disableMetrics` | `boolean` | `false` | Disable usage metrics |
+
+All options support `NUXT_UNLEASH_*` environment variable overrides:
+
+```bash
+NUXT_UNLEASH_TOKEN=prod:production.secret-token node .output/server/index.mjs
+```
+
+## How it works
+
+```
+Server startup
+  └─ Nitro plugin initializes unleash-client SDK (non-blocking)
+
+SSR request
+  └─ Server plugin reads context from cookies (unleash-userId, unleash-sessionId)
+  └─ Evaluates all flags via Node SDK (local, no HTTP roundtrip)
+  └─ Stores result in useState() → hydrates to client
+
+Client
+  └─ Reads hydrated flags immediately (zero flicker)
+  └─ Polls /api/_unleash/evaluate for updates (pauses when tab hidden)
+  └─ useUnleashContext().updateContext() triggers immediate re-evaluation
+```
+
+## Composables
+
+| Composable | Returns | Description |
+|---|---|---|
+| `useFlag(name)` | `ComputedRef<boolean>` | Whether a flag is enabled |
+| `useVariant(name)` | `ComputedRef<Variant>` | Variant details for A/B testing |
+| `useFlagsStatus()` | `{ ready, flagCount }` | SDK initialization status |
+| `useUnleashContext()` | `{ context, updateContext }` | Read/update evaluation context |
+| `useAllFlags()` | `ComputedRef<Record<string, EvaluatedFlag>>` | All evaluated flags |
+
+## Development
+
+```bash
+pnpm install
+pnpm dev:prepare
+pnpm dev           # Start playground
+pnpm test          # Run tests
+pnpm lint          # Lint
+```
+
+## License
+
+[MIT](./LICENSE)
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/@adamkasper/nuxt-unleash/latest.svg?style=flat&colorA=020420&colorB=00DC82

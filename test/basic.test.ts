@@ -8,8 +8,13 @@ describe('ssr', async () => {
   })
 
   it('renders the index page', async () => {
-    // Get response to a server-rendered page with `$fetch`.
     const html = await $fetch('/')
     expect(html).toContain('<div>basic</div>')
+  })
+
+  it('gracefully handles missing unleash config', async () => {
+    const html = await $fetch('/')
+    // Module should not break the app when config is missing
+    expect(html).toBeTruthy()
   })
 })
