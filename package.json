@@ -36,6 +36,14 @@
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "postinstall": "nuxt prepare"
   },
+  "peerDependencies": {
+    "@nuxthub/core": ">=0.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@nuxthub/core": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@nuxt/kit": "catalog:",
     "defu": "catalog:"
