@@ -8,7 +8,7 @@
     "preview": "nuxt preview --extends docus"
   },
   "dependencies": {
-    "docus": "latest",
-    "nuxt": "^4.0.0"
+    "docus": "^5.9.0",
+    "nuxt": "^4.4.2"
   }
 }
