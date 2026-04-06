@@ -24,9 +24,9 @@ export async function refreshUnleashFlags(options?: { force?: boolean }): Promis
     }
   }
 
-  await setRefreshing(true)
-
   try {
+    await setRefreshing(true)
+
     const response = await $fetch<{ toggles: FrontendToggle[] }>(config.url, {
       headers: {
         'Authorization': config.token,
@@ -34,6 +34,10 @@ export async function refreshUnleashFlags(options?: { force?: boolean }): Promis
       },
       timeout: 5000,
     })
+
+    if (!Array.isArray(response?.toggles)) {
+      throw new Error('Unexpected response shape from Unleash proxy')
+    }
 
     const toggles: Record<string, EvaluatedFlag> = {}
     for (const toggle of response.toggles) {

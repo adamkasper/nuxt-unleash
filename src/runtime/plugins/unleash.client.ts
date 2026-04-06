@@ -38,16 +38,18 @@ export default defineNuxtPlugin({
       }
     }
 
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling()
+      }
+      else {
+        startPolling()
+      }
+    }
+
     // Pause polling when tab is hidden
     if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          stopPolling()
-        }
-        else {
-          startPolling()
-        }
-      })
+      document.addEventListener('visibilitychange', onVisibilityChange)
     }
 
     startPolling()

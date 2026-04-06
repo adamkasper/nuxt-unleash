@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, addServerPlugin, createResolver, addImportsDir, addServerImportsDir, addTemplate, hasNuxtModule } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, addServerPlugin, createResolver, addImportsDir, addServerImportsDir, addTemplate, hasNuxtModule, addServerHandler } from '@nuxt/kit'
 import { defu } from 'defu'
 import type { UnleashModuleOptions } from './runtime/types'
 import { registerTypeTemplates } from './type-templates'
@@ -41,7 +41,7 @@ export default defineNuxtModule<UnleashModuleOptions>({
     refreshInterval: 15_000,
     clientRefreshInterval: 30_000,
     storage: 'memory',
-    storageKey: 'flags',
+    storageKey: 'unleash:flags',
   },
   setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
@@ -60,6 +60,9 @@ export default defineNuxtModule<UnleashModuleOptions>({
       const hubConfig = (nuxt.options as any).hub
       if (!hubConfig?.kv) {
         throw new Error('[nuxt-unleash] storage: "nuxthub" requires hub.kv: true in your nuxt.config.')
+      }
+      if (!nuxt.options.alias['hub:kv']) {
+        throw new Error('[nuxt-unleash] @nuxthub/core must be listed before nuxt-unleash in modules array.')
       }
     }
 
@@ -123,12 +126,10 @@ export default defineNuxtModule<UnleashModuleOptions>({
     addServerImportsDir(resolver.resolve('./runtime/server/utils'))
 
     // API route
-    nuxt.options.nitro = defu(nuxt.options.nitro, {
-      handlers: [{
-        route: '/api/_unleash/flags',
-        method: 'get',
-        handler: resolver.resolve('./runtime/server/api/_unleash/flags.get'),
-      }],
+    addServerHandler({
+      route: '/api/_unleash/flags',
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/_unleash/flags.get'),
     })
   },
 })
