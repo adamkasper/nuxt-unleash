@@ -1,14 +1,14 @@
 export default defineNuxtConfig({
   modules: ['../src/module'],
-  devtools: { enabled: true },
-  compatibilityDate: 'latest',
 
   unleash: {
-    url: 'https://unleash.example.com/api',
-    token: 'default:development.your-token-here',
-    appName: 'nuxt-unleash-playground',
-    environment: 'development',
-    refreshInterval: 15000,
-    clientRefreshInterval: 30000,
+    url: 'https://your-proxy.example.com/api/frontend',
+    token: 'your-frontend-token',
+    appName: 'playground',
+    storage: 'memory',
+    refreshInterval: 15_000,
+    clientRefreshInterval: 30_000,
   },
+
+  devtools: { enabled: true },
 })
