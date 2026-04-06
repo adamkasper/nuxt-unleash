@@ -38,8 +38,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "catalog:",
-    "defu": "catalog:",
-    "unleash-client": "catalog:"
+    "defu": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",
