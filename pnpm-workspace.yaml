@@ -1,5 +1,6 @@
 packages:
   - playground
+  - docs
 
 catalog:
   '@antfu/eslint-config': ^8.0.0
@@ -13,10 +14,11 @@ catalog:
   bumpp: ^11.0.1
   changelogen: ^0.6.2
   defu: ^6.1.6
+  docus: ^5.9.0
   eslint: ^10.2.0
   nuxt: ^4.4.2
   typescript: ^5.9.3
-  unleash-client: ^6.10.1
+
   vitest: ^4.1.2
   vue-tsc: ^3.2.6
 
