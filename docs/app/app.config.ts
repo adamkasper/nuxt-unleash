@@ -8,7 +8,8 @@ export default defineAppConfig({
     title: 'nuxt-unleash',
   },
   assistant: {
-    floatingInput: false
+    floatingInput: false,
+    explainWithAi: false
   },
   socials: {
     github: 'https://github.com/adamkasper/nuxt-unleash',
