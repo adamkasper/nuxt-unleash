@@ -61,16 +61,4 @@ declare module 'nitropack/types' {
 `,
   }, { nitro: true, node: true })
 
-  addTypeTemplate({
-    filename: 'types/unleash-h3.d.ts',
-    getContents: () => `
-import type { EvaluatedFlag } from '#unleash/types'
-
-declare module 'h3' {
-  interface H3EventContext {
-    unleashFlags?: Record<string, EvaluatedFlag>
-  }
-}
-`,
-  }, { nitro: true, node: true })
 }

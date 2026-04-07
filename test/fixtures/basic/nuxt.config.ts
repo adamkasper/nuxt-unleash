@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   modules: ['../../../src/module'],
+  compatibilityDate: '2026-04-06',
 
   unleash: {
     url: 'http://localhost:3737/api/frontend',

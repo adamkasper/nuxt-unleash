@@ -50,9 +50,12 @@ export default defineNuxtPlugin({
     document.addEventListener('visibilitychange', onVisibilityChange)
     startPolling()
 
-    nuxtApp.hook('app:error', () => {
+    const cleanup = () => {
       stopPolling()
       document.removeEventListener('visibilitychange', onVisibilityChange)
-    })
+    }
+
+    nuxtApp.hook('app:error', cleanup)
+    nuxtApp.hook('app:unmount', cleanup)
   },
 })
