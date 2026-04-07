@@ -7,9 +7,6 @@ export default defineAppConfig({
   header: {
     title: 'nuxt-unleash',
   },
-  socials: {
-    github: 'https://github.com/adamkasper/nuxt-unleash',
-  },
   github: {
     url: 'https://github.com/adamkasper/nuxt-unleash',
     branch: 'main',
