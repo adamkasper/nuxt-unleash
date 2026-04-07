@@ -1,6 +1,6 @@
-import { useRuntimeConfig } from 'nitropack/runtime'
-import { getFlags } from '#unleash/storage'
 import type { CachedFlags } from '#unleash/types'
+import { getFlags } from '#unleash/storage'
+import { useRuntimeConfig } from 'nitropack/runtime'
 import { refreshUnleashFlags } from './refreshUnleashFlags'
 
 export async function useUnleashFlags(): Promise<CachedFlags> {

@@ -1,5 +1,5 @@
-import { defineNuxtPlugin, useState, useRuntimeConfig } from '#app'
 import type { CachedFlags } from '#unleash/types'
+import { defineNuxtPlugin, useRuntimeConfig, useState } from '#app'
 
 export default defineNuxtPlugin({
   name: 'unleash-client',
@@ -14,7 +14,8 @@ export default defineNuxtPlugin({
     let intervalId: ReturnType<typeof setInterval> | null = null
 
     const startPolling = () => {
-      if (intervalId) return
+      if (intervalId)
+        return
       intervalId = setInterval(async () => {
         try {
           const data = await $fetch('/api/_unleash/flags')

@@ -1,6 +1,6 @@
-import { computed } from 'vue'
-import { useState } from '#app'
 import type { CachedFlags, Variant } from '#unleash/types'
+import { useState } from '#app'
+import { computed } from 'vue'
 
 const DISABLED_VARIANT: Readonly<Variant> = Object.freeze({ name: 'disabled', enabled: false })
 

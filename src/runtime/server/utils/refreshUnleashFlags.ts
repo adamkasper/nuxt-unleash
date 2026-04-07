@@ -1,6 +1,6 @@
-import { useRuntimeConfig } from 'nitropack/runtime'
-import { getFlags, setFlags, isRefreshing, setRefreshing } from '#unleash/storage'
 import type { CachedFlags, EvaluatedFlag } from '#unleash/types'
+import { getFlags, isRefreshing, setFlags, setRefreshing } from '#unleash/storage'
+import { useRuntimeConfig } from 'nitropack/runtime'
 
 interface FrontendToggle {
   name: string
@@ -9,7 +9,7 @@ interface FrontendToggle {
     name: string
     enabled: boolean
     featureEnabled?: boolean
-    payload?: { type: string; value: string }
+    payload?: { type: string, value: string }
   }
   impressionData?: boolean
 }
@@ -29,14 +29,14 @@ export async function refreshUnleashFlags(options?: { force?: boolean }): Promis
 
     const response = await $fetch<{ toggles: FrontendToggle[] }>(config.url, {
       headers: {
-        'Authorization': config.token,
-        'Accept': 'application/json',
+        Authorization: config.token,
+        Accept: 'application/json',
       },
       timeout: 5000,
     })
 
     if (!Array.isArray(response?.toggles)) {
-      throw new Error('Unexpected response shape from Unleash proxy')
+      throw new TypeError('Unexpected response shape from Unleash proxy')
     }
 
     const toggles: Record<string, EvaluatedFlag> = {}

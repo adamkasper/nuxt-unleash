@@ -1,3 +1,9 @@
+<script setup lang="ts">
+const myFeature = useFlag('my-feature')
+const allFlags = useAllFlags()
+const { ready, flagCount } = useFlagsStatus()
+</script>
+
 <template>
   <div style="font-family: sans-serif; max-width: 600px; margin: 40px auto;">
     <h1>nuxt-unleash v2 playground</h1>
@@ -19,9 +25,3 @@
     </section>
   </div>
 </template>
-
-<script setup lang="ts">
-const myFeature = useFlag('my-feature')
-const allFlags = useAllFlags()
-const { ready, flagCount } = useFlagsStatus()
-</script>

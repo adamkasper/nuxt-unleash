@@ -1,7 +1,7 @@
 export interface Variant {
   name: string
   enabled: boolean
-  payload?: { type: string; value: string }
+  payload?: { type: string, value: string }
 }
 
 export interface EvaluatedFlag {

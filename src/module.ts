@@ -1,10 +1,10 @@
-import { defineNuxtModule, addPlugin, addServerPlugin, createResolver, addImportsDir, addServerImportsDir, addTemplate, hasNuxtModule, addServerHandler } from '@nuxt/kit'
-import { defu } from 'defu'
 import type { UnleashModuleOptions } from './runtime/types'
-import { registerTypeTemplates } from './type-templates'
+import { addImportsDir, addPlugin, addServerHandler, addServerImportsDir, addServerPlugin, addTemplate, createResolver, defineNuxtModule, hasNuxtModule } from '@nuxt/kit'
+import { defu } from 'defu'
 import { getContents as memoryContents } from './runtime/templates/storage-memory'
 import { getContents as nitroContents } from './runtime/templates/storage-nitro'
 import { getContents as nuxthubContents } from './runtime/templates/storage-nuxthub'
+import { registerTypeTemplates } from './type-templates'
 
 export type { UnleashModuleOptions }
 

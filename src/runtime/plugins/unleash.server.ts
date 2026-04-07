@@ -1,5 +1,5 @@
-import { defineNuxtPlugin, useState } from '#app'
 import type { CachedFlags } from '#unleash/types'
+import { defineNuxtPlugin, useState } from '#app'
 
 export default defineNuxtPlugin({
   name: 'unleash-server',

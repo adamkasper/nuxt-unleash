@@ -60,5 +60,4 @@ declare module 'nitropack/types' {
 }
 `,
   }, { nitro: true, node: true })
-
 }

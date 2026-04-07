@@ -4,7 +4,7 @@ import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt({
   features: {
-    tooling: true,
+    tooling: false,
     stylistic: true,
     standalone: false,
   },
@@ -18,4 +18,6 @@ export default createConfigForNuxt({
     yaml: false,
     catalogs: true,
   },
-}))
+}), {
+  ignores: ['docs/**'],
+})
