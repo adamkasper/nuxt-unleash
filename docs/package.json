@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@iconify-json/ph": "catalog:",
+    "@vercel/analytics": "catalog:",
     "better-sqlite3": "catalog:",
     "docus": "catalog:",
     "nuxt": "catalog:"

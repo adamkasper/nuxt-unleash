@@ -76,8 +76,13 @@ const { ready, flagCount } = useFlagsStatus()
 </script>
 
 <template>
-  <div v-if="!ready">Loading flags...</div>
-  <div v-else>{{ flagCount }} flags loaded</div>
+  <div v-if="!ready">
+    Loading flags...
+  </div>
+
+  <div v-else>
+    {{ flagCount }} flags loaded
+  </div>
 </template>
 ```
 

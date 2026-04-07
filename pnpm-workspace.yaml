@@ -12,6 +12,7 @@ catalog:
   '@nuxt/schema': ^4.4.2
   '@nuxt/test-utils': ^4.0.0
   '@types/node': ^24.12.2
+  '@vercel/analytics': ^2.0.1
   better-sqlite3: ^12.8.0
   bumpp: ^11.0.1
   changelogen: ^0.6.2
