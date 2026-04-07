@@ -33,10 +33,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
-    "docs:dev": "nuxt dev docs --extends docus",
-    "docs:build": "nuxt build docs --extends docus",
-    "docs:generate": "nuxt generate docs --extends docus",
-    "docs:preview": "nuxt preview docs --extends docus",
+    "dev:docs": "nuxi dev docs",
+    "build:docs": "nuxi build docs",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "postinstall": "nuxt prepare"
   },

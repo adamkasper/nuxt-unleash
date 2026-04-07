@@ -2,12 +2,11 @@
   "name": "nuxt-unleash-docs",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev --extends docus",
-    "build": "nuxt build --extends docus",
-    "generate": "nuxt generate --extends docus",
-    "preview": "nuxt preview --extends docus"
+    "dev": "nuxt dev",
+    "build": "nuxt build"
   },
   "dependencies": {
+    "better-sqlite3": "catalog:",
     "docus": "catalog:",
     "nuxt": "catalog:"
   }

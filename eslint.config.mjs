@@ -18,5 +18,4 @@ export default createConfigForNuxt({
     yaml: false,
     catalogs: true,
   },
-  ignores: ['.agents/**'],
 }))

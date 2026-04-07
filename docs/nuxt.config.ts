@@ -1,10 +1,9 @@
 export default defineNuxtConfig({
+  extends: ['docus'],
+
   site: {
     name: 'nuxt-unleash',
   },
-  content: {
-    experimental: {
-      sqliteConnector: 'native',
-    },
-  },
+
+  compatibilityDate: '2026-04-06',
 })
