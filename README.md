@@ -7,6 +7,8 @@
 
 Edge-first [Unleash](https://docs.getunleash.io/) feature flags for Nuxt. Fetches pre-evaluated flags from the Unleash Proxy Frontend API, caches them with stale-while-revalidate, and hydrates to the client with zero flicker. No `unleash-client` SDK — works on Cloudflare Workers, Vercel, and Node.js.
 
+📖 [Documentation](https://nuxt-unleash.adamkasper.cz)
+
 ## Features
 
 - **Edge-first** — no Node.js-only dependencies, runs on Cloudflare Workers, Vercel, any runtime
@@ -163,7 +165,7 @@ Auto-imported in the `server/` directory:
 
 ## Documentation
 
-Full documentation: [nuxt-unleash docs](https://github.com/adamkasper/nuxt-unleash/tree/main/docs)
+Full documentation: [nuxt-unleash.adamkasper.cz](https://nuxt-unleash.adamkasper.cz)
 
 ## Development
 
