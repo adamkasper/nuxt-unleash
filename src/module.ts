@@ -81,9 +81,9 @@ export default defineNuxtModule<UnleashModuleOptions>({
         url: options.url,
         token: options.token,
         appName: options.appName,
-        environment: options.environment!,
-        refreshInterval: options.refreshInterval!,
-        storageKey: options.storageKey!,
+        environment: options.environment,
+        refreshInterval: options.refreshInterval,
+        storageKey: options.storageKey,
       },
     )
 
@@ -91,8 +91,8 @@ export default defineNuxtModule<UnleashModuleOptions>({
       nuxt.options.runtimeConfig.public.unleash as any,
       {
         appName: options.appName,
-        environment: options.environment!,
-        clientRefreshInterval: options.clientRefreshInterval!,
+        environment: options.environment,
+        clientRefreshInterval: options.clientRefreshInterval,
       },
     )
 
@@ -103,9 +103,9 @@ export default defineNuxtModule<UnleashModuleOptions>({
       getContents: () => {
         switch (options.storage) {
           case 'nuxthub':
-            return nuxthubContents(options.storageKey!, options.refreshInterval!)
+            return nuxthubContents(options.storageKey as string, options.refreshInterval as number)
           case 'nitro':
-            return nitroContents(options.storageKey!)
+            return nitroContents(options.storageKey as string)
           default:
             return memoryContents()
         }

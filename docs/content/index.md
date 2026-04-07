@@ -16,7 +16,7 @@ Edge-first Unleash feature flags for Nuxt. Works on Cloudflare Workers, Vercel, 
   ---
   size: xl
   to: /docs/getting-started/installation
-  trailing-icon: i-lucide-arrow-right
+  trailing-icon: i-ph-arrow-right-duotone
   ---
   Get Started
   :::
@@ -24,7 +24,7 @@ Edge-first Unleash feature flags for Nuxt. Works on Cloudflare Workers, Vercel, 
   :::u-button
   ---
   color: neutral
-  icon: i-simple-icons-github
+  icon: i-ph-github-logo-duotone
   size: xl
   to: https://github.com/adamkasper/nuxt-unleash
   variant: outline
@@ -40,7 +40,7 @@ Features
 #features
   :::u-page-feature
   ---
-  icon: i-lucide-zap
+  icon: i-ph-lightning-duotone
   ---
   #title
   Edge-First
@@ -51,7 +51,7 @@ Features
 
   :::u-page-feature
   ---
-  icon: i-lucide-database
+  icon: i-ph-database-duotone
   ---
   #title
   NuxtHub Native
@@ -62,7 +62,7 @@ Features
 
   :::u-page-feature
   ---
-  icon: i-lucide-package
+  icon: i-ph-package-duotone
   ---
   #title
   Zero Dependencies
@@ -73,7 +73,7 @@ Features
 
   :::u-page-feature
   ---
-  icon: i-lucide-shield-check
+  icon: i-ph-shield-check-duotone
   ---
   #title
   Type Safe
@@ -84,7 +84,7 @@ Features
 
   :::u-page-feature
   ---
-  icon: i-lucide-refresh-cw
+  icon: i-ph-arrows-clockwise-duotone
   ---
   #title
   Stale-While-Revalidate
@@ -95,7 +95,7 @@ Features
 
   :::u-page-feature
   ---
-  icon: i-lucide-monitor
+  icon: i-ph-monitor-duotone
   ---
   #title
   SSR + SPA

@@ -9,6 +9,9 @@ catalogs:
     '@antfu/eslint-config':
       specifier: ^8.0.0
       version: 8.0.0
+    '@iconify-json/ph':
+      specifier: ^1.2.2
+      version: 1.2.2
     '@nuxt/devtools':
       specifier: ^3.2.4
       version: 3.2.4
@@ -124,6 +127,9 @@ importers:
 
   docs:
     dependencies:
+      '@iconify-json/ph':
+        specifier: 'catalog:'
+        version: 1.2.2
       better-sqlite3:
         specifier: 'catalog:'
         version: 12.8.0
@@ -863,6 +869,9 @@ packages:
 
   '@iconify-json/lucide@1.2.101':
     resolution: {integrity: sha512-JUN7uuSLRG3GK/9c5b8cK9e7sL6EAWDaASIwBOd0zUeKS0ACcokJubo2RMQHyVUVpd8mYkrR3Zd2mkH9ghhw1Q==}
+
+  '@iconify-json/ph@1.2.2':
+    resolution: {integrity: sha512-PgkEZNtqa8hBGjHXQa4pMwZa93hmfu8FUSjs/nv4oUU6yLsgv+gh9nu28Kqi8Fz9CCVu4hj1MZs9/60J57IzFw==}
 
   '@iconify-json/simple-icons@1.2.77':
     resolution: {integrity: sha512-oaENvo6C3BkAEWMlcQA3XemxU9v2SFOTlApSUCODAkIu1haeLCjzrmH3HgmGqjRnJjM+LevO8sA+MgdMHBFBDA==}
@@ -8765,6 +8774,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/lucide@1.2.101':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/ph@1.2.2':
     dependencies:
       '@iconify/types': 2.0.0
 

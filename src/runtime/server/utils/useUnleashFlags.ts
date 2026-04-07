@@ -14,7 +14,9 @@ export async function useUnleashFlags(): Promise<CachedFlags> {
 
   const age = Date.now() - cached.lastUpdated
   if (age > config.refreshInterval) {
-    refreshUnleashFlags().catch(() => {})
+    refreshUnleashFlags().catch((err) => {
+      console.warn('[nuxt-unleash] Background refresh failed:', err)
+    })
   }
 
   return cached

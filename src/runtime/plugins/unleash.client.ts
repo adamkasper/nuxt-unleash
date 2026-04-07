@@ -3,7 +3,7 @@ import type { CachedFlags } from '#unleash/types'
 
 export default defineNuxtPlugin({
   name: 'unleash-client',
-  setup() {
+  setup(nuxtApp) {
     const config = useRuntimeConfig().public.unleash
     const state = useState<CachedFlags>('unleash-flags')
 
@@ -26,7 +26,7 @@ export default defineNuxtPlugin({
           }
         }
         catch {
-          // Silently ignore polling errors — flags stay at current value
+          // Polling errors are expected when offline — flags stay at current value
         }
       }, config.clientRefreshInterval)
     }
@@ -47,11 +47,12 @@ export default defineNuxtPlugin({
       }
     }
 
-    // Pause polling when tab is hidden
-    if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', onVisibilityChange)
-    }
-
+    document.addEventListener('visibilitychange', onVisibilityChange)
     startPolling()
+
+    nuxtApp.hook('app:error', () => {
+      stopPolling()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    })
   },
 })

@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import { useState } from '#app'
 import type { CachedFlags, Variant } from '#unleash/types'
 
-const DISABLED_VARIANT: Variant = { name: 'disabled', enabled: false }
+const DISABLED_VARIANT: Readonly<Variant> = Object.freeze({ name: 'disabled', enabled: false })
 
 export function useVariant(name: string) {
   const state = useState<CachedFlags>('unleash-flags')

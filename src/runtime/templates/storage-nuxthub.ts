@@ -1,5 +1,5 @@
 export function getContents(storageKey: string, refreshInterval: number): string {
-  const ttl = Math.ceil((refreshInterval * 3) / 1000)
+  const ttl = Math.ceil((refreshInterval * 10) / 1000)
   return `
 import type { CachedFlags } from '#unleash/types'
 import { kv } from '@nuxthub/kv'
