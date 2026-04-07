@@ -1,21 +1,12 @@
-import { computed } from '#imports'
-import { useUnleashState } from '../state'
+import { computed } from 'vue'
+import { useState } from '#app'
+import type { CachedFlags } from '#unleash/types'
 
-/**
- * Get the status of the Unleash flag evaluation.
- *
- * @example
- * ```ts
- * const { ready, flagCount } = useFlagsStatus()
- *
- * // Show loading state until flags are evaluated
- * // <template v-if="ready">...</template>
- * ```
- */
 export function useFlagsStatus() {
-  const flags = useUnleashState()
+  const state = useState<CachedFlags>('unleash-flags')
+
   return {
-    ready: computed(() => flags.value.ready),
-    flagCount: computed(() => Object.keys(flags.value.flags).length),
+    ready: computed(() => (state.value?.lastUpdated ?? 0) > 0),
+    flagCount: computed(() => Object.keys(state.value?.toggles ?? {}).length),
   }
 }

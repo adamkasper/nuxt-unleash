@@ -1,0 +1,14 @@
+{
+  "name": "nuxt-unleash-docs",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build"
+  },
+  "dependencies": {
+    "@iconify-json/ph": "catalog:",
+    "better-sqlite3": "catalog:",
+    "docus": "catalog:",
+    "nuxt": "catalog:"
+  }
+}

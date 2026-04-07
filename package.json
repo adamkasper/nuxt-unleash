@@ -33,13 +33,22 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "dev:docs": "nuxi dev docs",
+    "build:docs": "nuxi build docs",
     "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit",
     "postinstall": "nuxt prepare"
   },
+  "peerDependencies": {
+    "@nuxthub/core": ">=0.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@nuxthub/core": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@nuxt/kit": "catalog:",
-    "defu": "catalog:",
-    "unleash-client": "catalog:"
+    "defu": "catalog:"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:",

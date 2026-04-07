@@ -1,6 +1,5 @@
-<script setup>
-</script>
-
 <template>
-  <div>basic</div>
+  <div>
+    <h1>Unleash Test</h1>
+  </div>
 </template>

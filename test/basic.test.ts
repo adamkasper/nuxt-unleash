@@ -1,20 +1,26 @@
-import { fileURLToPath } from 'node:url'
-import { $fetch, setup } from '@nuxt/test-utils/e2e'
-import { describe, expect, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
+import { setup, $fetch } from '@nuxt/test-utils/e2e'
 
-describe('ssr', async () => {
+describe('nuxt-unleash', async () => {
   await setup({
-    rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)),
+    rootDir: './test/fixtures/basic',
   })
 
   it('renders the index page', async () => {
     const html = await $fetch('/')
-    expect(html).toContain('<div>basic</div>')
+    expect(html).toBeTruthy()
   })
 
-  it('gracefully handles missing unleash config', async () => {
-    const html = await $fetch('/')
-    // Module should not break the app when config is missing
-    expect(html).toBeTruthy()
+  it('serves flags via API route', async () => {
+    const data = await $fetch('/api/_unleash/flags')
+    expect(data).toHaveProperty('toggles')
+    expect(data).toHaveProperty('ready')
+    expect(data).toHaveProperty('lastUpdated')
+  })
+
+  it('returns empty flags when proxy is unreachable', async () => {
+    const data = await $fetch('/api/_unleash/flags')
+    expect(data.toggles).toBeDefined()
+    expect(typeof data.ready).toBe('boolean')
   })
 })

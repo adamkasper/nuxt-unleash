@@ -1,8 +1,10 @@
 packages:
   - playground
+  - docs
 
 catalog:
   '@antfu/eslint-config': ^8.0.0
+  '@iconify-json/ph': ^1.2.2
   '@nuxt/devtools': ^3.2.4
   '@nuxt/eslint-config': ^1.15.2
   '@nuxt/kit': ^4.4.2
@@ -10,20 +12,24 @@ catalog:
   '@nuxt/schema': ^4.4.2
   '@nuxt/test-utils': ^4.0.0
   '@types/node': ^24.12.2
+  'better-sqlite3': ^12.8.0
   bumpp: ^11.0.1
   changelogen: ^0.6.2
   defu: ^6.1.6
+  docus: ^5.9.0
   eslint: ^10.2.0
   nuxt: ^4.4.2
   typescript: ^5.9.3
-  unleash-client: ^6.10.1
   vitest: ^4.1.2
   vue-tsc: ^3.2.6
 
 onlyBuiltDependencies:
   - '@parcel/watcher'
+  - better-sqlite3
   - esbuild
+  - sharp
   - unrs-resolver
+  - vue-demi
 
 overrides:
   chokidar: ^5.0.0

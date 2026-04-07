@@ -1,54 +1,58 @@
-import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
-import { fetchFlags, useUnleashContextState, useUnleashState } from '../state'
+import { defineNuxtPlugin, useState, useRuntimeConfig } from '#app'
+import type { CachedFlags } from '#unleash/types'
 
 export default defineNuxtPlugin({
-  name: 'nuxt-unleash:client',
+  name: 'unleash-client',
   setup(nuxtApp) {
-    const flags = useUnleashState()
-    const context = useUnleashContextState()
     const config = useRuntimeConfig().public.unleash
+    const state = useState<CachedFlags>('unleash-flags')
 
-    if (!config.clientRefreshInterval || config.clientRefreshInterval <= 0)
+    if (!config.clientRefreshInterval || config.clientRefreshInterval <= 0) {
       return
+    }
 
-    let timer: ReturnType<typeof setInterval> | null = null
+    let intervalId: ReturnType<typeof setInterval> | null = null
 
-    async function refresh() {
-      try {
-        flags.value = await fetchFlags(context.value)
-      }
-      catch {
-        // SSR state remains valid until next successful refresh
+    const startPolling = () => {
+      if (intervalId) return
+      intervalId = setInterval(async () => {
+        try {
+          const data = await $fetch('/api/_unleash/flags')
+          if (data && data.toggles) {
+            state.value = {
+              toggles: data.toggles,
+              lastUpdated: data.lastUpdated,
+            }
+          }
+        }
+        catch {
+          // Polling errors are expected when offline — flags stay at current value
+        }
+      }, config.clientRefreshInterval)
+    }
+
+    const stopPolling = () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+        intervalId = null
       }
     }
 
-    function startPolling() {
-      if (timer)
-        clearInterval(timer)
-      timer = setInterval(refresh, config.clientRefreshInterval)
-    }
-
-    function stopPolling() {
-      if (timer) {
-        clearInterval(timer)
-        timer = null
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling()
+      }
+      else {
+        startPolling()
       }
     }
 
-    nuxtApp.hook('app:mounted', () => {
-      startPolling()
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    startPolling()
 
-      // Pause polling when tab is hidden
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden)
-          stopPolling()
-        else
-          startPolling()
-      })
+    nuxtApp.hook('app:error', () => {
+      stopPolling()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     })
-
-    if (import.meta.hot) {
-      import.meta.hot.dispose(stopPolling)
-    }
   },
 })

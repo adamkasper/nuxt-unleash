@@ -1,15 +1,7 @@
-import type { Variant } from 'unleash-client'
-
-export type { Variant } from 'unleash-client'
-
-export interface UnleashContext {
-  userId?: string
-  sessionId?: string
-  remoteAddress?: string
-  environment?: string
-  appName?: string
-  currentTime?: Date
-  properties?: Record<string, string>
+export interface Variant {
+  name: string
+  enabled: boolean
+  payload?: { type: string; value: string }
 }
 
 export interface EvaluatedFlag {
@@ -18,7 +10,18 @@ export interface EvaluatedFlag {
   variant: Variant
 }
 
-export interface EvaluatedFlags {
-  flags: Record<string, EvaluatedFlag>
-  ready: boolean
+export interface CachedFlags {
+  toggles: Record<string, EvaluatedFlag>
+  lastUpdated: number
+}
+
+export interface UnleashModuleOptions {
+  url: string
+  token: string
+  appName: string
+  environment?: string
+  refreshInterval?: number
+  clientRefreshInterval?: number
+  storage?: 'nuxthub' | 'nitro' | 'memory'
+  storageKey?: string
 }

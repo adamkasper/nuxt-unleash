@@ -1,34 +1,12 @@
-import { InMemStorageProvider, startUnleash } from 'unleash-client'
-import { setUnleashInstance } from './utils/unleash'
+import { defineNitroPlugin } from 'nitropack/runtime'
+import { refreshUnleashFlags } from './utils/refreshUnleashFlags'
 
-export default defineNitroPlugin((nitro) => {
-  const config = useRuntimeConfig().unleash as {
-    url: string
-    token: string
-    appName: string
-    environment: string
-    refreshInterval: number
-    disableMetrics: boolean
+export default defineNitroPlugin(async () => {
+  try {
+    await refreshUnleashFlags({ force: true })
+    console.log('[nuxt-unleash] Flags loaded on startup')
   }
-
-  // Non-blocking: server starts immediately, flags become available once SDK syncs
-  startUnleash({
-    url: config.url,
-    appName: config.appName,
-    customHeaders: { Authorization: config.token },
-    refreshInterval: config.refreshInterval,
-    disableMetrics: config.disableMetrics,
-    environment: config.environment,
-    storageProvider: new InMemStorageProvider(),
-  }).then((instance) => {
-    setUnleashInstance(instance)
-    // eslint-disable-next-line no-console
-    console.log('[nuxt-unleash] SDK initialized')
-
-    nitro.hooks.hook('close', () => {
-      instance.destroy()
-    })
-  }).catch((error) => {
-    console.error('[nuxt-unleash] Failed to initialize SDK:', error)
-  })
+  catch (error) {
+    console.warn('[nuxt-unleash] Failed to load flags on startup:', (error as Error).message)
+  }
 })

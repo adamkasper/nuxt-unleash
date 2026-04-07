@@ -1,29 +1,12 @@
-import {
-  addImportsDir,
-  addPlugin,
-  addServerHandler,
-  addServerPlugin,
-  createResolver,
-  defineNuxtModule,
-} from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, addServerPlugin, createResolver, addImportsDir, addServerImportsDir, addTemplate, hasNuxtModule, addServerHandler } from '@nuxt/kit'
 import { defu } from 'defu'
+import type { UnleashModuleOptions } from './runtime/types'
+import { registerTypeTemplates } from './type-templates'
+import { getContents as memoryContents } from './runtime/templates/storage-memory'
+import { getContents as nitroContents } from './runtime/templates/storage-nitro'
+import { getContents as nuxthubContents } from './runtime/templates/storage-nuxthub'
 
-export interface ModuleOptions {
-  /** Unleash API URL (e.g. https://unleash.example.com/api) */
-  url: string
-  /** Server-side API token */
-  token: string
-  /** Application name */
-  appName: string
-  /** Environment name (default: 'default') */
-  environment?: string
-  /** SDK refresh interval in milliseconds (default: 15000) */
-  refreshInterval?: number
-  /** Disable usage metrics (default: false) */
-  disableMetrics?: boolean
-  /** Client-side refresh interval in milliseconds, 0 to disable (default: 30000) */
-  clientRefreshInterval?: number
-}
+export type { UnleashModuleOptions }
 
 declare module '@nuxt/schema' {
   interface PublicRuntimeConfig {
@@ -40,77 +23,111 @@ declare module '@nuxt/schema' {
       appName: string
       environment: string
       refreshInterval: number
-      disableMetrics: boolean
     }
   }
 }
 
-export default defineNuxtModule<ModuleOptions>({
+export default defineNuxtModule<UnleashModuleOptions>({
   meta: {
-    name: '@adamkasper/nuxt-unleash',
+    name: 'nuxt-unleash',
     configKey: 'unleash',
-    compatibility: { nuxt: '>=4.0.0' },
   },
   defaults: {
     url: '',
     token: '',
     appName: '',
     environment: 'default',
-    refreshInterval: 15000,
-    disableMetrics: false,
-    clientRefreshInterval: 30000,
+    refreshInterval: 15_000,
+    clientRefreshInterval: 30_000,
+    storage: 'memory',
+    storageKey: 'unleash:flags',
   },
   setup(options, nuxt) {
+    const resolver = createResolver(import.meta.url)
+
     if (!options.url || !options.token || !options.appName) {
-      console.warn('[nuxt-unleash] Missing required options: url, token, appName')
+      console.warn('[nuxt-unleash] Missing required config (url, token, appName). Module disabled.')
       return
     }
 
-    const { resolve } = createResolver(import.meta.url)
+    // Storage validation
+    if (options.storage === 'nuxthub') {
+      const hasNuxtHub = hasNuxtModule('@nuxthub/core', nuxt)
+      if (!hasNuxtHub) {
+        throw new Error('[nuxt-unleash] storage: "nuxthub" requires @nuxthub/core module. Install it and add it to modules before nuxt-unleash.')
+      }
+      const hubConfig = (nuxt.options as any).hub
+      if (!hubConfig?.kv) {
+        throw new Error('[nuxt-unleash] storage: "nuxthub" requires hub.kv: true in your nuxt.config.')
+      }
+      if (!nuxt.options.alias['hub:kv']) {
+        throw new Error('[nuxt-unleash] @nuxthub/core must be listed before nuxt-unleash in modules array.')
+      }
+    }
 
-    // Private runtime config (server-only) — supports NUXT_UNLEASH_* env overrides
+    if (options.storage === 'nitro') {
+      const hasUnleashStorage = !!(nuxt.options.nitro as any)?.storage?.unleash
+      if (!hasUnleashStorage) {
+        console.warn('[nuxt-unleash] storage: "nitro" but nitro.storage.unleash is not configured. Falling back to memory.')
+        options.storage = 'memory'
+      }
+    }
+
+    // Runtime config
     nuxt.options.runtimeConfig.unleash = defu(
-      nuxt.options.runtimeConfig.unleash as Record<string, unknown> | undefined,
+      nuxt.options.runtimeConfig.unleash,
       {
         url: options.url,
         token: options.token,
         appName: options.appName,
-        environment: options.environment || 'default',
-        refreshInterval: options.refreshInterval || 15000,
-        disableMetrics: options.disableMetrics || false,
+        environment: options.environment,
+        refreshInterval: options.refreshInterval,
       },
     )
 
-    // Public runtime config (client + server) — no secrets
     nuxt.options.runtimeConfig.public.unleash = defu(
-      nuxt.options.runtimeConfig.public.unleash as Record<string, unknown> | undefined,
+      nuxt.options.runtimeConfig.public.unleash as any,
       {
         appName: options.appName,
-        environment: options.environment || 'default',
-        clientRefreshInterval: options.clientRefreshInterval || 30000,
+        environment: options.environment,
+        clientRefreshInterval: options.clientRefreshInterval,
       },
     )
 
-    // Server: Nitro plugin to initialize SDK on startup
-    addServerPlugin(resolve('./runtime/server/nitro-plugin'))
+    // Storage template
+    const storageTemplate = addTemplate({
+      filename: 'unleash/storage.ts',
+      write: true,
+      getContents: () => {
+        switch (options.storage) {
+          case 'nuxthub':
+            return nuxthubContents(options.storageKey as string, options.refreshInterval as number)
+          case 'nitro':
+            return nitroContents(options.storageKey as string)
+          default:
+            return memoryContents()
+        }
+      },
+    })
+    nuxt.options.alias['#unleash/storage'] = storageTemplate.dst
 
-    // Server: API route to evaluate flags
+    // Type templates
+    registerTypeTemplates()
+
+    // Plugins
+    addServerPlugin(resolver.resolve('./runtime/server/nitro-plugin'))
+    addPlugin(resolver.resolve('./runtime/plugins/unleash.server'))
+    addPlugin(resolver.resolve('./runtime/plugins/unleash.client'))
+
+    // Auto-imports
+    addImportsDir(resolver.resolve('./runtime/composables'))
+    addServerImportsDir(resolver.resolve('./runtime/server/utils'))
+
+    // API route
     addServerHandler({
-      route: '/api/_unleash/evaluate',
-      handler: resolve('./runtime/server/api/evaluate.get'),
+      route: '/api/_unleash/flags',
+      method: 'get',
+      handler: resolver.resolve('./runtime/server/api/_unleash/flags.get'),
     })
-
-    // Plugins: SSR evaluation + client hydration/refresh
-    addPlugin({
-      src: resolve('./runtime/plugins/unleash.server'),
-      mode: 'server',
-    })
-    addPlugin({
-      src: resolve('./runtime/plugins/unleash.client'),
-      mode: 'client',
-    })
-
-    // Auto-import composables
-    addImportsDir(resolve('./runtime/composables'))
   },
 })
