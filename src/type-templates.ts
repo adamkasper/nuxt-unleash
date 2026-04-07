@@ -46,14 +46,14 @@ import type { CachedFlags } from '#unleash/types'
 
 declare module 'nitropack' {
   interface InternalApi {
-    '/_unleash/flags': {
+    '/api/_unleash/flags': {
       get: CachedFlags & { ready: boolean }
     }
   }
 }
 declare module 'nitropack/types' {
   interface InternalApi {
-    '/_unleash/flags': {
+    '/api/_unleash/flags': {
       get: CachedFlags & { ready: boolean }
     }
   }

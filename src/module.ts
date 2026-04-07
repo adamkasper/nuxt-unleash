@@ -23,7 +23,6 @@ declare module '@nuxt/schema' {
       appName: string
       environment: string
       refreshInterval: number
-      storageKey: string
     }
   }
 }
@@ -83,7 +82,6 @@ export default defineNuxtModule<UnleashModuleOptions>({
         appName: options.appName,
         environment: options.environment,
         refreshInterval: options.refreshInterval,
-        storageKey: options.storageKey,
       },
     )
 
