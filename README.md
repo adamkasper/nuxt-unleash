@@ -5,16 +5,17 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-[Unleash](https://docs.getunleash.io/) feature flags for Nuxt with full SSR support. Flags are evaluated server-side during rendering — no flicker, no client-side SDK, one API token.
+Edge-first [Unleash](https://docs.getunleash.io/) feature flags for Nuxt. Fetches pre-evaluated flags from the Unleash Proxy Frontend API, caches them with stale-while-revalidate, and hydrates to the client with zero flicker. No `unleash-client` SDK — works on Cloudflare Workers, Vercel, and Node.js.
 
 ## Features
 
-- **SSR-first** — flags evaluated during server rendering, hydrated to client
-- **Zero flicker** — no `undefined` state, no layout shift on hydration
-- **Single token** — server-side API token only, never exposed to the client
-- **Auto-refresh** — client polls for flag updates, pauses when tab is hidden
-- **Reactive composables** — `useFlag`, `useVariant`, `useFlagsStatus`, `useUnleashContext`
-- **Context-aware** — update user context on the fly (login, A/B segments)
+- **Edge-first** — no Node.js-only dependencies, runs on Cloudflare Workers, Vercel, any runtime
+- **Zero flicker** — flags evaluated server-side during SSR, hydrated to client
+- **Stale-while-revalidate** — instant responses from cache, background refresh when stale
+- **Pluggable storage** — NuxtHub KV, Nitro/unstorage drivers, or in-memory
+- **Auto-refresh** — client polls for updates via internal API route, pauses when tab is hidden
+- **Zero dependencies** — just `@nuxt/kit` and `defu`
+- **Type safe** — generated types for composables, server utils, and `$fetch`
 
 ## Setup
 
@@ -28,14 +29,14 @@ Configure in `nuxt.config.ts`:
 export default defineNuxtConfig({
   modules: ['@adamkasper/nuxt-unleash'],
   unleash: {
-    url: 'https://unleash.example.com/api',
-    token: 'default:development.your-token-here',
+    url: 'https://your-unleash-proxy.example.com/api/frontend',
+    token: 'your-frontend-api-token',
     appName: 'my-app',
   },
 })
 ```
 
-That's it. All composables are auto-imported.
+All composables and server utils are auto-imported.
 
 ## Usage
 
@@ -58,9 +59,6 @@ const showBanner = useFlag('new-banner')
 ```vue
 <script setup>
 const variant = useVariant('checkout-experiment')
-// variant.value.name    → 'control' | 'treatment-a' | 'treatment-b'
-// variant.value.enabled → boolean
-// variant.value.payload → { type: string, value: string } | undefined
 </script>
 
 <template>
@@ -68,22 +66,6 @@ const variant = useVariant('checkout-experiment')
   <CheckoutB v-else-if="variant.name === 'treatment-b'" />
   <CheckoutDefault v-else />
 </template>
-```
-
-### Update context (after login, etc.)
-
-```vue
-<script setup>
-const { updateContext } = useUnleashContext()
-
-async function onLogin(user) {
-  await updateContext({
-    userId: user.id,
-    properties: { plan: user.plan },
-  })
-  // All flags are now re-evaluated with the new context
-}
-</script>
 ```
 
 ### Check loading status
@@ -94,12 +76,8 @@ const { ready, flagCount } = useFlagsStatus()
 </script>
 
 <template>
-  <div v-if="!ready">
-    Loading flags...
-  </div>
-  <div v-else>
-    {{ flagCount }} flags loaded
-  </div>
+  <div v-if="!ready">Loading flags...</div>
+  <div v-else>{{ flagCount }} flags loaded</div>
 </template>
 ```
 
@@ -111,17 +89,32 @@ console.log(allFlags.value)
 // { 'my-flag': { name, enabled, variant }, ... }
 ```
 
+### Server-side flag checks
+
+```ts
+// server/api/my-route.ts
+export default defineEventHandler(async () => {
+  const { toggles } = await useUnleashFlags()
+
+  if (toggles['premium-api']?.enabled) {
+    return { tier: 'premium' }
+  }
+  return { tier: 'free' }
+})
+```
+
 ## Configuration
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `url` | `string` | **required** | Unleash API URL |
-| `token` | `string` | **required** | Server-side API token |
-| `appName` | `string` | **required** | Application name |
+| `url` | `string` | **required** | Unleash Proxy Frontend API URL |
+| `token` | `string` | **required** | Frontend API token (server-only, never exposed to client) |
+| `appName` | `string` | **required** | Application name sent to the proxy |
 | `environment` | `string` | `'default'` | Environment name |
-| `refreshInterval` | `number` | `15000` | Server SDK polling interval (ms) |
-| `clientRefreshInterval` | `number` | `30000` | Client polling interval (ms), `0` to disable |
-| `disableMetrics` | `boolean` | `false` | Disable usage metrics |
+| `refreshInterval` | `number` | `15000` | Stale-while-revalidate TTL in ms |
+| `clientRefreshInterval` | `number` | `30000` | Client polling interval in ms (`0` to disable) |
+| `storage` | `'nuxthub' \| 'nitro' \| 'memory'` | `'memory'` | Storage backend for caching flags |
+| `storageKey` | `string` | `'unleash:flags'` | Key prefix used in storage |
 
 All options support `NUXT_UNLEASH_*` environment variable overrides:
 
@@ -133,17 +126,16 @@ NUXT_UNLEASH_TOKEN=prod:production.secret-token node .output/server/index.mjs
 
 ```
 Server startup
-  └─ Nitro plugin initializes unleash-client SDK (non-blocking)
+  └─ Nitro plugin fetches flags from Unleash Proxy, stores in cache
 
 SSR request
-  └─ Server plugin reads context from cookies (unleash-userId, unleash-sessionId)
-  └─ Evaluates all flags via Node SDK (local, no HTTP roundtrip)
-  └─ Stores result in useState() → hydrates to client
+  └─ Server plugin reads flags from cache (stale-while-revalidate)
+  └─ If stale, triggers background refresh
+  └─ Stores flags in useState() → hydrates to client
 
 Client
   └─ Reads hydrated flags immediately (zero flicker)
-  └─ Polls /api/_unleash/evaluate for updates (pauses when tab hidden)
-  └─ useUnleashContext().updateContext() triggers immediate re-evaluation
+  └─ Polls GET /api/_unleash/flags for updates (pauses when tab hidden)
 ```
 
 ## Composables
@@ -152,9 +144,21 @@ Client
 |---|---|---|
 | `useFlag(name)` | `ComputedRef<boolean>` | Whether a flag is enabled |
 | `useVariant(name)` | `ComputedRef<Variant>` | Variant details for A/B testing |
-| `useFlagsStatus()` | `{ ready, flagCount }` | SDK initialization status |
-| `useUnleashContext()` | `{ context, updateContext }` | Read/update evaluation context |
+| `useFlagsStatus()` | `{ ready, flagCount }` | Flag loading status |
 | `useAllFlags()` | `ComputedRef<Record<string, EvaluatedFlag>>` | All evaluated flags |
+
+## Server Utils
+
+Auto-imported in the `server/` directory:
+
+| Utility | Returns | Description |
+|---|---|---|
+| `useUnleashFlags()` | `Promise<CachedFlags>` | Read flags with stale-while-revalidate |
+| `refreshUnleashFlags(opts?)` | `Promise<CachedFlags \| null>` | Force refresh from proxy |
+
+## Documentation
+
+Full documentation: [nuxt-unleash docs](https://github.com/adamkasper/nuxt-unleash/tree/main/docs)
 
 ## Development
 

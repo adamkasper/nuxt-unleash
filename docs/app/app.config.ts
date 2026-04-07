@@ -67,5 +67,17 @@ export default defineAppConfig({
       upload: 'ph:upload-simple-duotone',
       warning: 'ph:warning-duotone',
     },
+    pageHero: {
+      slots: {
+        title: 'font-semibold sm:text-6xl',
+        container: '!pb-0',
+      },
+    },
+    pageCard: {
+      slots: {
+        container: 'lg:flex min-w-0',
+        wrapper: 'flex-none',
+      },
+    },
   },
 })

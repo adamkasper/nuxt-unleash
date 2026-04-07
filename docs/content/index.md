@@ -1,15 +1,15 @@
 ---
 seo:
-  title: nuxt-unleash
-  description: Edge-first Unleash feature flags for Nuxt
+  title: Edge-first Unleash feature flags for Nuxt
+  description: Feature flags that work on Cloudflare Workers, Vercel, and Node.js. No unleash-client SDK, stale-while-revalidate caching, zero flicker SSR.
 ---
 
 ::u-page-hero
 #title
-nuxt-unleash
+Feature flags for the edge.
 
 #description
-Edge-first Unleash feature flags for Nuxt. Works on Cloudflare Workers, Vercel, and Node.js.
+Unleash feature flags for Nuxt that work everywhere — Cloudflare Workers, Vercel, Node.js. :br No SDK, no flicker, no Node.js-only dependencies.
 
 #links
   :::u-button
@@ -29,78 +29,98 @@ Edge-first Unleash feature flags for Nuxt. Works on Cloudflare Workers, Vercel, 
   to: https://github.com/adamkasper/nuxt-unleash
   variant: outline
   ---
-  GitHub
+  Star on GitHub
   :::
 ::
 
 ::u-page-section
-#title
-Features
+  :::u-page-grid
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Edge-First]{.text-primary}
+    #description
+    No `unleash-client` SDK, no Node.js-only APIs. Runs on Cloudflare Workers, Vercel, Deno, or plain Node.js — anywhere Nitro runs.
+    ::::
 
-#features
-  :::u-page-feature
-  ---
-  icon: i-ph-lightning-duotone
-  ---
-  #title
-  Edge-First
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Zero Flicker]{.text-primary} SSR
+    #description
+    Flags are resolved server-side during rendering and hydrated to the client. No `undefined` state, no layout shift.
+    ::::
 
-  #description
-  Works on Cloudflare Workers, Vercel, and Node.js. No persistent process needed.
-  :::
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [NuxtHub]{.text-primary} Native
+    #description
+    First-class NuxtHub KV integration. One config line gives you persistent, edge-local flag storage on Cloudflare.
+    ::::
 
-  :::u-page-feature
-  ---
-  icon: i-ph-database-duotone
-  ---
-  #title
-  NuxtHub Native
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    Reactive [Composables]{.text-primary}
+    #description
+    Auto-imported `useFlag`, `useVariant`, `useAllFlags`, and `useFlagsStatus` — all reactive, all type-safe.
+    ::::
 
-  #description
-  First-class NuxtHub KV integration. One line of config.
-  :::
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Stale-While-Revalidate]{.text-primary}
+    #description
+    Instant responses from cache, background refresh when stale. No polling on the server — just lazy, per-request revalidation.
+    ::::
 
-  :::u-page-feature
-  ---
-  icon: i-ph-package-duotone
-  ---
-  #title
-  Zero Dependencies
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Pluggable Storage]{.text-primary}
+    #description
+    NuxtHub KV, any Nitro/unstorage driver (Redis, Cloudflare KV, filesystem), or simple in-memory.
+    ::::
 
-  #description
-  No unleash-client SDK. Just @nuxt/kit and defu.
-  :::
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Zero Dependencies]{.text-primary}
+    #description
+    No `unleash-client` SDK. Just `@nuxt/kit` and `defu`. Lightweight, auditable, no supply chain bloat.
+    ::::
 
-  :::u-page-feature
-  ---
-  icon: i-ph-shield-check-duotone
-  ---
-  #title
-  Type Safe
-
-  #description
-  Generated types for $fetch, useFetch, composables, and server utils.
-  :::
-
-  :::u-page-feature
-  ---
-  icon: i-ph-arrows-clockwise-duotone
-  ---
-  #title
-  Stale-While-Revalidate
-
-  #description
-  Lazy refresh on request. No polling on server. Instant responses from cache.
-  :::
-
-  :::u-page-feature
-  ---
-  icon: i-ph-monitor-duotone
-  ---
-  #title
-  SSR + SPA
-
-  #description
-  Server-side hydration with no flicker. Optional client polling with tab visibility pause.
+    ::::u-page-card
+    ---
+    spotlight: true
+    class: col-span-2 lg:col-span-1
+    ---
+    #title
+    [Type Safe]{.text-primary}
+    #description
+    Generated type declarations for composables, server utils, `$fetch`, and `useFetch`. Full autocompletion in your IDE.
+    ::::
   :::
 ::
