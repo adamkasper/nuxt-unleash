@@ -8,6 +8,8 @@ import { registerTypeTemplates } from './type-templates'
 
 export type { UnleashModuleOptions }
 
+const STORAGE_KEY_RE = /^[\w:.\-]+$/
+
 declare module '@nuxt/schema' {
   interface PublicRuntimeConfig {
     unleash: {
@@ -48,6 +50,19 @@ export default defineNuxtModule<UnleashModuleOptions>({
     if (!options.url || !options.token || !options.appName) {
       console.warn('[nuxt-unleash] Missing required config (url, token, appName). Module disabled.')
       return
+    }
+
+    // Input validation
+    if (typeof options.storageKey === 'string' && !STORAGE_KEY_RE.test(options.storageKey)) {
+      throw new Error('[nuxt-unleash] storageKey must only contain alphanumeric characters, colons, dots, hyphens, and underscores.')
+    }
+
+    if (typeof options.refreshInterval === 'number' && (options.refreshInterval < 0 || !Number.isFinite(options.refreshInterval))) {
+      throw new Error('[nuxt-unleash] refreshInterval must be a non-negative finite number.')
+    }
+
+    if (typeof options.clientRefreshInterval === 'number' && (options.clientRefreshInterval < 0 || !Number.isFinite(options.clientRefreshInterval))) {
+      throw new Error('[nuxt-unleash] clientRefreshInterval must be a non-negative finite number.')
     }
 
     // Storage validation
